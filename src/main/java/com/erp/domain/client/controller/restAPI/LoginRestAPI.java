@@ -1,5 +1,6 @@
 package com.erp.domain.client.controller.restAPI;
 
+import com.erp.domain.client.dto.request.EmailCheckRequestDto;
 import com.erp.domain.client.dto.request.LoginRequestDto;
 import com.erp.domain.client.dto.request.RegisterClientRequestDto;
 import com.erp.domain.client.service.ClientService;
@@ -19,6 +20,16 @@ public class LoginRestAPI {
     private final ClientService clientService;
 
 
+    // 이메일 중복 확인
+    @PostMapping("/validation")
+    public ResponseEntity<String> checkEmail(@RequestBody EmailCheckRequestDto requestDto) {
+        boolean isDuplicate = clientService.checkEmailDuplicate(requestDto.email());
+
+        if (isDuplicate) {
+            return ResponseEntity.status(409).body("이미 존재하는 email입니다.");
+        }
+        return ResponseEntity.ok("사용 가능한 이메일입니다.");
+    }
 
     // 로그인
     @PostMapping("/login")
@@ -32,5 +43,4 @@ public class LoginRestAPI {
         clientService.registerClient(requestDto);
         return ResponseEntity.ok("회원가입 성공 ");
     }
-
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,11 @@ public class ClientService {
     private final BCryptPasswordEncoder passwordEncoder;
 
 
+    // email 중복조회
+    public boolean checkEmailDuplicate(String email){
+        return clientRepository.existsByEmail(email);
+        // true - 중복, false - null
+    }
 
     // 회원가입
     @Transactional

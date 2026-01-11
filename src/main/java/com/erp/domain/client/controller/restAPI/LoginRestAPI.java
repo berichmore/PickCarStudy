@@ -1,9 +1,11 @@
 package com.erp.domain.client.controller.restAPI;
 
 import com.erp.domain.client.dto.request.LoginRequestDto;
+import com.erp.domain.client.dto.request.RegisterClientRequestDto;
 import com.erp.domain.client.service.ClientService;
 import com.erp.global.jwt.TokenInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +18,19 @@ public class LoginRestAPI {
 
     private final ClientService clientService;
 
+
+
+    // 로그인
     @PostMapping("/login")
     public TokenInfo toClientLogin(@RequestBody LoginRequestDto loginRequestDto){
         return clientService.login(loginRequestDto);
+    }
+
+    // 회원가입
+    @PostMapping("/register")
+    public ResponseEntity<String> registerClient(@RequestBody RegisterClientRequestDto requestDto){
+        clientService.registerClient(requestDto);
+        return ResponseEntity.ok("회원가입 성공 ");
     }
 
 }

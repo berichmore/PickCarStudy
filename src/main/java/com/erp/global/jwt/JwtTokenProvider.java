@@ -74,20 +74,21 @@ public class JwtTokenProvider {
         }
 
         // 권한 정보 획득
-        Collection<? extends  GrantedAuthority> authorites =
+        Collection<? extends GrantedAuthority> authorites =
                 Arrays.stream(claims.get("auth").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
         // UserDetails 객체 만들어서 Authentication 리턴
+        // UserDetails : interface, User: UserDetails를 구현한 class.
         UserDetails principal = new User(claims.getSubject(), "", authorites);
         return new UsernamePasswordAuthenticationToken(principal, "", authorites);
     }
 
     // 토큰 검증
-    public boolean validateToken(String token){
-        try{
-            // 파싱 시도해서 에러가 안 나면 유효한 토큰인 것
+            public boolean validateToken(String token){
+                try{
+                    // 파싱 시도해서 에러가 안 나면 유효한 토큰인 것
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         }catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e){
@@ -100,6 +101,9 @@ public class JwtTokenProvider {
         return false;
     }
 
+
+
+
     //  토큰 파싱
     private Claims parseClaim(String accessToken){
         try{
@@ -109,3 +113,21 @@ public class JwtTokenProvider {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

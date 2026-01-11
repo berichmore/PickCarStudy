@@ -6,8 +6,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
@@ -18,6 +20,15 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     /*
+       SecurityFilterChain -> DelegatingFilterProxy의 인터셉트  -> Spring Security Chain
+       -> Bean Filter(|| JwtAuthenticationFilter || - 바로 이 페이지 -) 실행
+       -->
+          1. header에서 Beaer<토큰> 추출
+          2. JwtTokenProvider를 이용해 토큰 유효성 검사
+          3. if (유효) SecurityContextHolder에 인증정보 저장
+          4. 인증이 성공하면 Filter_2를 거쳐 Servlet으로 넘어가고, 실패하면 그 자리에서 401Error
+
+
         1. Header에서 토큰 꺼내기
         2. JwtTokenProvider로 검사하기( validateToken)
         3. 정품이면 '통과 도장'(Authentication)을 찍어서 SecurityContext라는 임시 보관함에 넣기
@@ -46,9 +57,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         // 5. 다음 필터로 넘기기 ( 이게 없으면 요청이 여기서 멈춤)
         filterChain.doFilter(request, response);
-
-
     }
+
+
 
 
     // Header에서 "Bearer " 문자열 떼고 토큰만 발라내는 메서드
@@ -59,6 +70,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         }
         return null;
     }
+
+
 }
 
 

@@ -20,7 +20,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                      유저를 만든다.
      */
 
+//    private final ClientRepository clientRepository;
+
     private final ClientRepository clientRepository;
+
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -30,12 +34,15 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
     }
 
+
+
     // 2. Client Entity -> UserDetails 변환 메서드
     private UserDetails createUserDetails(Client client){
         return User.builder()
                 .username(client.getEmail())
                 .password(client.getPassword())  //db에 있는 암호화된 비밀번호여야 함
-                .roles("User")
+                .roles("employee")  // SecurityConfig와 맞춰야 함
                 .build();
     }
+
 }
